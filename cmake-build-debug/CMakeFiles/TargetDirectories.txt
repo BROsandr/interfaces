@@ -1,3 +1,0 @@
-/home/alex/code/c++/git/cmake-build-debug/CMakeFiles/interfaces.dir
-/home/alex/code/c++/git/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/alex/code/c++/git/cmake-build-debug/CMakeFiles/rebuild_cache.dir
