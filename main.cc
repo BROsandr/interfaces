@@ -43,7 +43,7 @@ void WritePackets(std::vector<Packet>& packets, const std::string& file_name) {
 }
 
 std::string FileToString() {
-  std::string file_name{"packets.txt"};
+  std::string file_name{"packets_to_transfer.txt"};
   std::ifstream file{file_name};
 
   std::string file_string;
@@ -62,14 +62,17 @@ std::vector<Packet> ReadPackets(std::string& file_string) {
   std::string start{"11111111"};
   std::string end{"00000000"};
 
-  while (file_string.find(end) != std::string::npos || file_string.find(start) != std::string::npos) {
+  while (file_string.find(end) != std::string::npos && file_string.find(start) != std::string::npos &&
+         file_string.length() >= 40) {
     file_string.erase(0, file_string.find(start));
     Packet packet;
     packet.LoadFromPacket(file_string);
-    if (packet.IsValid())
-      file_string.erase(0, file_string.find(end) + file_string.length());
-    else
-      file_string.erase(0, file_string.find(start) + file_string.length());
+    if (packet.IsValid()) {
+      packets.emplace_back(packet);
+      file_string.erase(0, 40);
+    } else {
+      file_string.erase(0, start.length());
+    }
   }
 
   return packets;
@@ -78,11 +81,11 @@ std::vector<Packet> ReadPackets(std::string& file_string) {
 int main() {
   std::vector<std::string> strings{ReadData()};
   std::vector<Packet> packets{MakePackets(strings)};
-  WritePackets(packets, "packets.txt");
+  WritePackets(packets, "packets_to_transfer.txt");
 
   std::string file_string{FileToString()};
   packets = ReadPackets(file_string);
-  WritePackets(packets, "packets_res.txt");
+  WritePackets(packets, "packets_to_receive.txt");
 
   return 0;
 }
