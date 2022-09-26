@@ -15,7 +15,8 @@
 struct Packet {
   friend std::ostream& operator<<(std::ostream& os, const Packet& packet);
 
-  void ReadFromData(std::string& ss, int index);
+  void LoadFromData(std::string& ss, int index);
+  void LoadFromPacket(std::string& ss);
 
   Byte start{0xFF};
   OctoPayload payload1;
@@ -28,26 +29,25 @@ static Byte ComputeHash(const std::string& str) {
   return CRC::Calculate(str.c_str(), str.length(), CRC::CRC_8());
 }
 
-inline void Packet::ReadFromData(std::string& str, int index) {
+inline void Packet::LoadFromData(std::string& str, int index) {
   std::stringstream ss{str};
 
-  ss >> payload1;
-  payload1.set_number(index);
-  ss >> payload2;
-  payload2.set_number(index + 1);
+  ss >> payload1.data;
+  payload1.number = index;
+  ss >> payload2.data;
+  payload2.number = index + 1;
 
   crc = ComputeHash(payload1 + payload2);
 }
 
-inline void Packet::ReadFromPackets(std::string& str) {
+inline void Packet::LoadFromPacket(std::string& str) {
   std::stringstream ss{str};
 
-  ss >> payload1;
-  payload1.set_number(index);
-  ss >> payload2;
-  payload2.set_number(index + 1);
-
-  crc = ComputeHash(payload1 + payload2);
+  ss >> payload1.data;
+  ss >> payload1.number;
+  ss >> payload2.data;
+  ss >> payload2.number;
+  ss >> crc;
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Packet& packet) {

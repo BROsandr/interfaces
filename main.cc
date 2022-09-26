@@ -26,7 +26,9 @@ std::vector<Packet> MakePackets(std::vector<std::string>& strings)  {
   {
     int index{0};
     for (auto &str : strings) {
-      packets.emplace_back(str, index);
+      Packet packet;
+      packet.LoadFromData(str, index);
+      packets.emplace_back(packet);
       index += 2;
     }
   }
