@@ -13,6 +13,8 @@ std::vector<std::string> ReadData() {
   while (!file.eof()) {
     std::string line;
     getline(file, line);
+    if (line.empty())
+      break;
     strings.push_back(line);
   }
 
@@ -71,11 +73,19 @@ std::vector<Packet> ReadPackets(std::string& file_string) {
       packets.emplace_back(packet);
       file_string.erase(0, 40);
     } else {
-      file_string.erase(0, start.length());
+      file_string.erase(0, 1);
     }
   }
 
   return packets;
+}
+
+void PrintPacketNumbers(std::vector<Packet>& packets) {
+  std::cout << "Packets: " << std::endl;
+
+  for (auto& packet : packets) {
+    std::cout << packet.payload1.number.to_ulong() << std::endl;
+  }
 }
 
 int main() {
@@ -83,9 +93,14 @@ int main() {
   std::vector<Packet> packets{MakePackets(strings)};
   WritePackets(packets, "packets_to_transfer.txt");
 
+  std::string str;
+  std::cout << "Waiting, press enter";
+  getline(std::cin, str);
   std::string file_string{FileToString()};
   packets = ReadPackets(file_string);
   WritePackets(packets, "packets_to_receive.txt");
+
+  PrintPacketNumbers(packets);
 
   return 0;
 }
