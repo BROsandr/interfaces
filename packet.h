@@ -13,9 +13,9 @@
 #include "octopayload.h"
 
 struct Packet {
-  explicit Packet(std::string& str, int index);
-
   friend std::ostream& operator<<(std::ostream& os, const Packet& packet);
+
+  void ReadFromData(std::string& ss, int index);
 
   Byte start{0xFF};
   OctoPayload payload1;
@@ -25,10 +25,21 @@ struct Packet {
 };
 
 static Byte ComputeHash(const std::string& str) {
-  return CRC::Calculate(str.c_str(), sizeof(str.c_str()), CRC::CRC_8());
+  return CRC::Calculate(str.c_str(), str.length(), CRC::CRC_8());
 }
 
-inline Packet::Packet(std::string& str, int index) {
+inline void Packet::ReadFromData(std::string& str, int index) {
+  std::stringstream ss{str};
+
+  ss >> payload1;
+  payload1.set_number(index);
+  ss >> payload2;
+  payload2.set_number(index + 1);
+
+  crc = ComputeHash(payload1 + payload2);
+}
+
+inline void Packet::ReadFromPackets(std::string& str) {
   std::stringstream ss{str};
 
   ss >> payload1;
@@ -45,6 +56,8 @@ inline std::ostream& operator<<(std::ostream& os, const Packet& packet) {
   os << packet.payload1;
   os << ' ';
   os << packet.payload2;
+  os << ' ';
+  os << packet.crc;
   os << ' ';
   os << packet.end;
 
