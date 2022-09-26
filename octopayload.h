@@ -27,6 +27,8 @@ inline std::string OctoPayload::operator+(OctoPayload& octo_payload) {
 
 inline std::ostream& operator<<(std::ostream& os, const OctoPayload& payload) {
   os << std::bitset<8>{payload.Content()};
+
+  return os;
 }
 
 #endif //INTERFACES__OCTOPAYLOAD_H_

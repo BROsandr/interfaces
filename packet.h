@@ -38,8 +38,10 @@ inline bool Packet::IsValid() {
     case 0:
     case 2:
     case 4:
-      if (payload1.number.to_ulong() + 1 == payload2.number.to_ulong() )
+      if (payload1.number.to_ulong() + 1 == payload2.number.to_ulong())
         return is_valid;
+      else
+        return false;
       break;
 
     default:
@@ -82,6 +84,8 @@ inline std::ostream& operator<<(std::ostream& os, const Packet& packet) {
   os << packet.end;
 
   os << std::endl;
+
+  return os;
 }
 
 #endif //INTERFACES__PACKET_H_
