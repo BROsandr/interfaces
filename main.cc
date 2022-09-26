@@ -30,6 +30,7 @@ std::vector<Packet> MakePackets(std::vector<std::string>& strings)  {
       packet.LoadFromData(str, index);
       packets.emplace_back(packet);
       index += 2;
+      index %= 6;
     }
   }
 
@@ -84,7 +85,23 @@ void PrintPacketNumbers(std::vector<Packet>& packets) {
   std::cout << "Packets: " << std::endl;
 
   for (auto& packet : packets) {
-    std::cout << packet.payload1.number.to_ulong() << std::endl;
+    switch (packet.payload1.number.to_ulong()) { 
+      case 0:
+        std::cout << "D1";
+        break;
+
+      case 2:
+        std::cout << "D2";
+        break;
+
+      case 4:
+        std::cout << "D3";
+        break;
+
+        default:
+        std::cout << "unknown";
+    }
+    std::cout << std::endl;
   }
 }
 
