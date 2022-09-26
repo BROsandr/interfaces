@@ -36,10 +36,6 @@ std::istream& operator>>(std::stringstream& is, OctoPayload& packet) {
   is >> data;
   packet.set_data(data);
 
-  std::bitset<3> number;
-  is >> number;
-  packet.set_number(number);
-
   return is;
 }
 
@@ -63,8 +59,8 @@ inline Data& OctoPayload::number() {
 
 inline void OctoPayload::set_number(std::bitset<3> number) {
   content[0] = number[0];
-  content[0] = number[1];
-  content[0] = number[2];
+  content[1] = number[1];
+  content[2] = number[2];
 }
 
 #endif //INTERFACES__OCTOPAYLOAD_H_

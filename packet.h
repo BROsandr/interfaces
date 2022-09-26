@@ -32,7 +32,9 @@ inline Packet::Packet(std::string& str, int index) {
   std::stringstream ss{str};
 
   ss >> payload1;
+  payload1.set_number(index);
   ss >> payload2;
+  payload2.set_number(index + 1);
 
   crc = ComputeHash(payload1 + payload2);
 }
