@@ -5,7 +5,7 @@
 #ifndef INTERFACES__OCTOPAYLOAD_H_
 #define INTERFACES__OCTOPAYLOAD_H_
 
-#include "common.h"
+#include <bitset>
 
 struct OctoPayload {
   std::string operator+(OctoPayload& octo_payload);

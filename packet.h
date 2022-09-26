@@ -9,7 +9,6 @@
 
 #include "CRC.h"
 
-#include "common.h"
 #include "octopayload.h"
 
 struct Packet {
@@ -19,14 +18,14 @@ struct Packet {
   void LoadFromPacket(std::string& ss);
   bool IsValid();
 
-  Byte start{0xFF};
+  std::bitset<8> start{0xFF};
   OctoPayload payload1;
   OctoPayload payload2;
-  Byte crc{0};
-  Byte end{0x00};
+  std::bitset<8> crc{0};
+  std::bitset<8> end{0x00};
 };
 
-static Byte CalculateHash(const std::string& str) {
+static std::bitset<8> CalculateHash(const std::string& str) {
   return CRC::Calculate(str.c_str(), str.length(), CRC::CRC_8());
 }
 
