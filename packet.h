@@ -17,6 +17,7 @@ struct Packet {
 
   void LoadFromData(std::string& ss, int index);
   void LoadFromPacket(std::string& ss);
+  bool IsValid();
 
   Byte start{0xFF};
   OctoPayload payload1;
@@ -27,6 +28,24 @@ struct Packet {
 
 static Byte CalculateHash(const std::string& str) {
   return CRC::Calculate(str.c_str(), str.length(), CRC::CRC_8());
+}
+
+inline bool Packet::IsValid() {
+  bool is_valid{(start == 0xFF &&
+                CalculateHash(payload1 + payload2) == crc &&
+                end == 0x00)};
+
+  switch (payload1.number.to_ulong()) {
+    case 0:
+    case 2:
+    case 4:
+      if (payload1.number.to_ulong() + 1 == payload2.number.to_ulong() )
+        return is_valid;
+      break;
+
+    default:
+      return false;
+  }
 }
 
 inline void Packet::LoadFromData(std::string& str, int index) {
